@@ -47,7 +47,7 @@ plot(df_politeness$gender, df_politeness$frequency)
 
 ```
 
-# Make a linear mixed effects model
+# Make a simple linear mixed effects model
 
 ```{r, echo=FALSE}
 
@@ -57,7 +57,7 @@ summary(m_model_simple)
 ```
 
 
-Let’s focus on the output for the random effects first:
+Let us focus on the output for the random effects first:
 Have a look at the column standard deviation. This is a measure of how much
 variability in the dependent measure there is due to scenarios and subjects (our
 two random effects). You can see that scenario (“item”) has much less variability
@@ -80,7 +80,7 @@ this by performing the calculation by hand).
 
 Now, let’s consider the intercept. In tutorial 1, we already talked about the fact
 that oftentimes, model intercepts are not particularly meaningful. But this
-intercept is especially weird. It’s 202.588 Hz … where does that value come
+intercept is especially weird. It’s 202.588 Hz ... where does that value come
 from?
 If you look back at the boxplot that we constructed earlier, you can see that the
 value 202.588 Hz seems to fall halfway between males and females (in the
@@ -88,7 +88,7 @@ informal condition) – and this is indeed what this intercept represents. It’
 average of our data for the informal condition.
 As we didn’t inform our model that there’s two sexes in our dataset, the intercept
 is particularly off, in between the voice pitch of males and females. This is just
-like the classic example of a farm with a dozen hens and a dozen cows … where
+like the classic example of a farm with a dozen hens and a dozen cows ... where
 the mean legs of all farm animals considered together is three, not a particularly
 informative representation of what’s going on at the farm.
 
@@ -97,7 +97,7 @@ informative representation of what’s going on at the farm.
 
 # Adding gender as an additional fixed effect.
 
-We added “gender” as a fixed effect because the relationship
+We now add “gender” as a fixed effect because the relationship
 between sex and pitch is systematic and predictable 
 (i.e., we expect females to have higher pitch). 
 This is different from the random effects subject and item,
@@ -127,6 +127,7 @@ We see that males and females differ by about 109 Hz. And the intercept is now
 much higher (256.846 Hz), as it now represents the female category (for the
 informal condition). The coefficient for the effect of attitude didn’t change much.
 
+
 ```{r, echo=FALSE}
 
 cat("\n ************ \n")
@@ -138,6 +139,7 @@ cat("Complex model with gender \n")
 summary(m_model_complex)
 
 ```
+
 
 # Comparing two models
 
@@ -171,6 +173,7 @@ internal stuff (in particular, the likelihood estimator), and it is necessary to
 when you compare models using the likelihood ratio test (Pinheiro & Bates, 2000;
 Bolker et al., 2009).
 
+
 ```{r, echo=FALSE}
 
 m_model_simple_LRT = lmer(frequency ~ attitude + (1|subject) + (1|scenario),
@@ -195,11 +198,12 @@ question, one without the effect in question. We perform the likelihood ratio te
 using the anova() function:
 
 You’re being reminded of the formula of the two models that you’re comparing.
-Then, you find a Chi-Square value, the associated degrees of freedom and the pvalue2.
+Then, you find a Chi-Square value, the associated degrees of freedom and the pvalue.
 You would report this result the following way:
 
- politeness affected pitch ($\chi$  (1)=11.94, p=0.00055), lowering it by
+ politeness affected pitch ($\chi$ 2 (1)=11.94, p=0.00055), lowering it by
 about 19.7 Hz +/- 5.5 (standard errors)
+
 
 ```{r, echo=FALSE}
 
@@ -211,16 +215,18 @@ anova(m_model_simple_LRT, m_model_complex_LRT)
 
 # Interaction effects
 
-What happens if you have an
-interaction? We didn’t talk much about interactions yet, but say, you predicted
+What happens if you have an interaction? We didn’t talk much about interactions yet, but say, you predicted
 “attitude” to have an effect on pitch that is somehow modulated through “gender”.
 For example, it could be that speaking politely versus informally has the opposite
 effect for men and women. Or it could be that women show a difference and men
 don’t (or vice versa). If you have such an inter-dependence between two factors
 (called an interaction), you can test it the following way:
+
 full model: frequency ~ attitude*gender
 reduced model: frequency ~ attitude + gender
+
 In R, interactions between two factors are specified with a “*” rather than a “+”.
+
 
 ```{r, echo=FALSE}
 
@@ -249,13 +255,16 @@ the effect of politeness is, it’s going to be the same for all subjects and it
 
 CONCEPT 2: slope is the fixed effects part
 
+
 ```{r, echo=FALSE}
 
 coef(m_model_complex)
 
 ```
 
+
 ## Introduce by subject variability
+
 
 ```{r, echo=FALSE}
 
@@ -277,6 +286,7 @@ plot(fitted(m_model_complex), residuals(m_model_complex))
 
 ```
 
+
 ## Normality of residuals
 
 
@@ -293,9 +303,29 @@ qqnorm(residuals(m_model_complex))
 ```{r, echo=FALSE}
 
 #dfbeta(model = m_model_complex)
+#dfbetas(model = m_model_simple)
 
 ```
 
 
 ## Independence
+
+# Supplementary Material
+
+## Another connection with ANOVA
+
+NOTE: this does not account for repeated measures from the same subject
+
+
+```{r , echo=FALSE}
+
+oneway.test(formula = frequency ~ gender, data = df_politeness)
+
+```
+
+# References
+
+[1] Winter, B. (2013). Linear models and linear mixed effects models in R with linguistic applications. arXiv:1308.5499. [http://arxiv.org/pdf/1308.5499.pdf]
+
+[2] http://www.bodowinter.com/tutorials.html, URL accessed December 2018
 

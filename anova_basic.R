@@ -14,9 +14,15 @@
 # from http://homepages.inf.ed.ac.uk/bwebb/statistics/ANOVA_in_R.pdf
 ##########################################################################################
 
-##############################
+##########################################################
+# Load libraries
+##########################################################
+library(lme4)
+library(sqldf)
+
+##########################################################
 # Load data
-##############################
+##########################################################
 attach(InsectSprays)
 data("InsectSprays")
 
@@ -26,21 +32,20 @@ head(InsectSprays)
 summary(InsectSprays)
 
 
-##############################
+##########################################################
 # Plot it
-##############################
-
+##########################################################
 boxplot(count ~ spray, data = InsectSprays)
 
 
-##############################
+##########################################################
 # One-way ANOVA
-##############################
+##########################################################
 oneway.test(formula = count ~ spray, data = InsectSprays)
 
-##############################
+##########################################################
 # ANOVA
-##############################
+##########################################################
 aov_out = aov(formula = count ~ spray, data = InsectSprays)
 summary(aov_out)
 
@@ -48,7 +53,6 @@ summary(aov_out)
 # ANOVA and linear regression are the same thing – more on that tomorrow. For the
 # moment, the main point to note is that you can look at the results from aov() in terms of the
 # linear regression that was carried out, i.e. you can see the parameters that were estimated.
-# > summary.lm(aov.out)
 # Implicitly this can be understood as a set of (non-orthogonal) contrasts of the first group
 # against each of the other groups. R uses these so-called ‘Treatment’ contrasts as the default,
 # but you can request alternative contrasts (see later) 
@@ -57,9 +61,9 @@ summary.lm(aov_out)
 
 # Interpret as treatment contrasts compred to control (see PDF)
 
-#############################
+#########################################################
 # Plot residuals
-#############################
+#########################################################
 
 plot(aov_out)
 
@@ -78,14 +82,16 @@ plot(aov_out)
 # values, which they do
 
 
-############################
+####################################################################################
 # Contrasts
 # taken from
 # http://homepages.inf.ed.ac.uk/bwebb/statistics/Statistical_models.html
-############################
+####################################################################################
+
 # In general, the F-ratio its p-value for an ANOVA tell us that the groups differ,
 # but not which groups differ. In some experimental designs we might have particular 
 # expectations about which group differences will be meaningful.
+
 # First, we need to specify contrasts attribute for our predictor variable (spray type). 
 # We can use one of the default contrast matrices , e.g. contr.helmert() is an orthogonal
 # contrast matrix where each category (except the last) is compared to the mean effect 
@@ -93,11 +99,12 @@ plot(aov_out)
 # vs. drug A vs. drug B.
 
 contrasts(InsectSprays$spray)
+contr.helmert(InsectSprays$spray)
 
-
-#if we want to define our own contrasts it is possible too.
-# Let's say that first we want to compare first 3 conditions to the last 3 and then run more contrasts within those two subgroups of conditions.
-#First, we define the weights
+# if we want to define our own contrasts it is possible too.
+# Let's say that first we want to compare first 3 conditions to the last 3 and 
+# then run more contrasts within those two subgroups of conditions.
+# First, we define the weights
 
 con1=c(1,1,1,-1,-1,-1)
 con2=c(2,-1,-1,0,0,0)
@@ -108,28 +115,31 @@ con5=c(0,0,0,0,1,-1)
 our.contrasts=cbind(con1,con2,con3,con4,con5)
 our.contrasts
 
-# Then we attach contrasts attribute.
+# Then we attach contrasts attribute
 contrasts(InsectSprays$spray)=our.contrasts
 
 # Finally, once we obtain our model with aov() function we use summary.lm() 
 # instead of standard summary() to observe the results of the contrasts.
-model_aov_newcontrasts = aov(count~spray,data=InsectSprays)
+model_aov_newcontrasts = aov(count~spray, data=InsectSprays)
 summary.lm(model_aov_newcontrasts)
 
 
-#################################
+#############################################################
 # Post-hoc tests
-#################################
+#############################################################
+
 # A common approach alternative approach to planned contrasts is simply to carry out a set of t-tests between various groups,
 # potentially whatever looks interesting in the data (hence the name, post-hoc). It is necessary to control for the overall 
 # type I error rate, α, given the number of comparisons, c. The simplest approach is using the simple Bonferonni correction 
 # set the significance level at α/c, e.g. here, if comparing each group against the first group we would be doing 5 comparisons, 
 # so would need each t-test to have a p<.01 to be significant to ensure overall α<0.05. More precise is to use Dunn-Sidak correction:
 # There are various other methods for multiple comparisons, each of which makes slightly different assumptions in attempting to control 
-# for both type I and type II error (power), including: Neuman-Keuls (liberal on Type I); Scheff(strict on Type I but bad for Type II);
-# Dunnett� (optimised for comparing all treatments to a single control); Games-Howell (doesn� sume equal variances); a
-# and Tukey HSD (optimised for when all possible pairwise comparisons are being made)
+# for both type I and type II error (power), including: 
+#   Neuman-Keuls (liberal on Type I); 
+#   Scheff(strict on Type I but bad for Type II);
+#   Dunnett� (optimised for comparing all treatments to a single control); 
+#   Games-Howell (doesn� sume equal variances); and
+#   Tukey HSD (optimised for when all possible pairwise comparisons are being made)
 
-#TukeyHSD(model.aov)
 TukeyHSD(aov_out)
 
