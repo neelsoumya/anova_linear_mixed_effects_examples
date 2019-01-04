@@ -342,6 +342,8 @@ summary.lm(aov_out)
 
 TODO
 
+Also see anova_basic.R
+
 ### Post-hoc tests (alternative to planned contrasts)
 
 ```{r, echo=FALSE}

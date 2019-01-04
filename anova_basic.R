@@ -136,9 +136,9 @@ summary.lm(model_aov_newcontrasts)
 # There are various other methods for multiple comparisons, each of which makes slightly different assumptions in attempting to control 
 # for both type I and type II error (power), including: 
 #   Neuman-Keuls (liberal on Type I); 
-#   Scheff(strict on Type I but bad for Type II);
-#   Dunnett� (optimised for comparing all treatments to a single control); 
-#   Games-Howell (doesn� sume equal variances); and
+#   Scheff (strict on Type I but bad for Type II);
+#   Dunnett (optimised for comparing all treatments to a single control); 
+#   Games-Howell (does not assume equal variances); and
 #   Tukey HSD (optimised for when all possible pairwise comparisons are being made)
 
 TukeyHSD(aov_out)
