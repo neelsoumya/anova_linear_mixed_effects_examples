@@ -511,12 +511,53 @@ $(document).ready(function () {
 <h1>Supplementary Material</h1>
 <div id="another-connection-with-anova" class="section level2">
 <h2>Another connection with ANOVA</h2>
+<p>One-way test</p>
 <p>NOTE: this does not account for repeated measures from the same subject</p>
 <pre><code>## 
 ##  One-way analysis of means (not assuming equal variances)
 ## 
 ## data:  frequency and gender
 ## F = 178.45, num df = 1.00, denom df = 79.42, p-value &lt; 2.2e-16</code></pre>
+<div id="anova-and-contrasts" class="section level3">
+<h3>ANOVA and contrasts</h3>
+<pre><code>##   M
+## F 0
+## M 1</code></pre>
+<pre><code>## 
+## Call:
+## aov(formula = frequency ~ gender, data = df_politeness)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -92.186 -28.426  -2.676  23.124  90.124 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  246.986      5.680   43.48   &lt;2e-16 ***
+## genderM     -108.110      8.081  -13.38   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 36.81 on 81 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.6884, Adjusted R-squared:  0.6846 
+## F-statistic:   179 on 1 and 81 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="anova-and-planned-contrasts" class="section level3">
+<h3>ANOVA and planned contrasts</h3>
+<p>TODO</p>
+</div>
+<div id="post-hoc-tests-alternative-to-planned-contrasts" class="section level3">
+<h3>Post-hoc tests (alternative to planned contrasts)</h3>
+<pre><code>##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = frequency ~ gender, data = df_politeness)
+## 
+## $gender
+##          diff       lwr       upr p adj
+## M-F -108.1101 -124.1895 -92.03074     0</code></pre>
+</div>
 </div>
 </div>
 <div id="references" class="section level1">

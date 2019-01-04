@@ -310,11 +310,16 @@ qqnorm(residuals(m_model_complex))
 
 ## Independence
 
+
+
 # Supplementary Material
 
 ## Another connection with ANOVA
 
+One-way test
+
 NOTE: this does not account for repeated measures from the same subject
+
 
 
 ```{r , echo=FALSE}
@@ -322,6 +327,30 @@ NOTE: this does not account for repeated measures from the same subject
 oneway.test(formula = frequency ~ gender, data = df_politeness)
 
 ```
+
+### ANOVA and contrasts
+
+```{r , echo=FALSE}
+
+contrasts(df_politeness$gender)
+aov_out = aov(formula = frequency ~ gender, data = df_politeness)
+summary.lm(aov_out)
+
+```
+
+### ANOVA and planned contrasts
+
+TODO
+
+### Post-hoc tests (alternative to planned contrasts)
+
+```{r, echo=FALSE}
+
+TukeyHSD(aov_out)
+
+```
+
+
 
 # References
 
