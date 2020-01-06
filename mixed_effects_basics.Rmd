@@ -1,7 +1,7 @@
 ---
 title: "mixed_effects_basics"
 author: "Soumya Banerjee"
-date: "22 February 2018"
+date: "6 January 2019"
 output: html_document
 ---
 
@@ -112,6 +112,10 @@ m_model_complex = lmer(frequency ~ attitude + gender + (1|subject) + (1|scenario
                        data=df_politeness)
 
 summary(m_model_complex)
+
+# Computing confidence intervals
+confint.merMod(m_model_complex)
+confint.merMod(m_model_complex, method = "boot")
 
 ```
 
